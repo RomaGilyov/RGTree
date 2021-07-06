@@ -12,7 +12,7 @@ type Comment interface {
 	GetParentID() int
 }
 
-func MakeTree(root Comment, comments []Comment) Comment {
+func MakeTree(root Comment, comments []Comment) error {
 	memo := make(map[int]bool, len(comments))
 
 	memo[root.GetID()] = true
@@ -20,11 +20,19 @@ func MakeTree(root Comment, comments []Comment) Comment {
 	return makeTreeUtil(root, comments, memo)
 }
 
-func makeTreeUtil(root Comment, comments []Comment, memo map[int]bool) Comment {
+func makeTreeUtil(root Comment, comments []Comment, memo map[int]bool) error {
 	var children []Comment
 
+	var err error
+
 	for _, child := range comments {
-		if child.GetParentID() == root.GetID() && memo[child.GetID()] == false {
+		if child.GetParentID() == root.GetID() {
+			if memo[child.GetID()] == true {
+				errMes := "Recursive data: " + strconv.Itoa(child.GetID()) + " and " + strconv.Itoa(root.GetID())
+
+				return errors.New(errMes)
+			}
+
 			memo[child.GetID()] = true
 
 			children = append(children, child)
@@ -32,10 +40,16 @@ func makeTreeUtil(root Comment, comments []Comment, memo map[int]bool) Comment {
 	}
 
 	for _, child := range children {
-		root.SetChild(makeTreeUtil(child, comments, memo))
+		err = makeTreeUtil(child, comments, memo)
+
+		if err != nil {
+			return err
+		}
+
+		root.SetChild(child)
 	}
 
-	return root
+	return nil
 }
 
 func Traverse(root Comment, handler func(Comment)) error {

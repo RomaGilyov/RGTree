@@ -46,7 +46,7 @@ func (ct CommentTest) String() string {
 func testData() (Comment, []Comment) {
 	var plain []Comment
 
-	root := &CommentTest{ID: 1, ParentID: 3, Title: "Test 1"} // ParentID 3 -> Check for infinite recursion
+	root := &CommentTest{ID: 1, Title: "Test 1"}
 
 	plain = append(plain, root)
 	plain = append(plain, &CommentTest{ID: 2, ParentID: 1, Title: "Test 2"})
@@ -77,10 +77,24 @@ func TestMakeTreeMap(t *testing.T) {
 	}
 }
 
-var TestTraverseIterations int
+func TestMakeTreeMapRecursiveError(t *testing.T) {
+	root, plain := testData()
+
+	ct := root.(*CommentTest)
+
+	ct.ParentID = 3 // ID reference to child
+
+	err := MakeTree(root, plain)
+
+	if err == nil {
+		t.Fatalf("Infinite recurtion must return an error")
+	}
+}
 
 func TestTraverse(t *testing.T) {
 	root, plain := testData()
+
+	var TestTraverseIterations int
 
 	MakeTree(root, plain)
 
