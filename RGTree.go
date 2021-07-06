@@ -1,10 +1,8 @@
 package RGTree
 
-import "fmt"
-
 type RGTree interface {
 	GetParent () RGTree
-	SetParent (RGTree) RGTree
+	SetParent (RGTree)
 	GetID () int
 	GetParentID () int
 }
@@ -13,7 +11,6 @@ func MakeTree(root RGTree, items []RGTree) RGTree {
 	mapped := make(map[int]RGTree, len(items))
 
 	for _, tree := range items {
-		fmt.Println(tree)
 		mapped[tree.GetID()] = tree
 	}
 
@@ -24,7 +21,9 @@ func MakeTreeUtil(root RGTree, mapped map[int]RGTree) RGTree {
 	parent, exists := mapped[root.GetParentID()]
 
 	if exists {
-		root.SetParent(MakeTreeUtil(parent, mapped))
+		child := MakeTreeUtil(parent, mapped)
+
+		root.SetParent(child)
 	}
 
 	return root
