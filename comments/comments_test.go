@@ -59,7 +59,7 @@ func testData() (Comment, []Comment) {
 
 ////////////////////////////////////////////////////// Testing /////////////////////////////////////////
 
-func TestMakeTreeMap(t *testing.T) {
+func TestMakeTree(t *testing.T) {
 	root, plain := testData()
 
 	MakeTree(root, plain)
@@ -77,7 +77,7 @@ func TestMakeTreeMap(t *testing.T) {
 	}
 }
 
-func TestMakeTreeMapRecursiveError(t *testing.T) {
+func TestMakeTreeRecursiveError(t *testing.T) {
 	root, plain := testData()
 
 	ct := root.(*CommentTest)
@@ -98,25 +98,23 @@ func TestTraverse(t *testing.T) {
 
 	MakeTree(root, plain)
 
-	err := Traverse(root, func (comment Comment) {
-		if ct, ok := comment.(*CommentTest); ok {
-			ct.Title = "Test " + strconv.Itoa(ct.GetID()) + " Modified"
-		}
-
+	Traverse(root, func (comment Comment) {
 		TestTraverseIterations++
 	})
 
 	if TestTraverseIterations != 5 {
 		t.Fatal("There are 5 elements", TestTraverseIterations, "given")
 	}
+}
 
-	if err != nil {
-		t.Fatal("There are no duplicates but there duplicate error")
-	}
+func TestTraverseError(t *testing.T) {
+	root, plain := testData()
+
+	MakeTree(root, plain)
 
 	root.GetChildren()[0].SetChild(&CommentTest{ID: 2}) // Check for doubles
 
-	err = Traverse(root, func (comment Comment) {})
+	err := Traverse(root, func (comment Comment) {})
 
 	if err == nil {
 		t.Fatal("Traverse function must give error when a duplicate encountered")
