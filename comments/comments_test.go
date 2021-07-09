@@ -98,8 +98,10 @@ func TestTraverse(t *testing.T) {
 
 	MakeTree(root, plain)
 
-	Traverse(root, func (comment Comment) {
+	Traverse(root, func (comment Comment) bool {
 		TestTraverseIterations++
+
+		return true
 	})
 
 	if TestTraverseIterations != 5 {
@@ -114,7 +116,9 @@ func TestTraverseError(t *testing.T) {
 
 	root.GetChildren()[0].SetChild(&CommentTest{ID: 2}) // Check for doubles
 
-	err := Traverse(root, func (comment Comment) {})
+	err := Traverse(root, func (comment Comment) bool {
+		return true
+	})
 
 	if err == nil {
 		t.Fatal("Traverse function must give error when a duplicate encountered")

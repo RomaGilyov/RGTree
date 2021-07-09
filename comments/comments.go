@@ -52,18 +52,20 @@ func makeTreeUtil(root Comment, comments []Comment, memo map[int]bool) error {
 	return nil
 }
 
-func Traverse(root Comment, handler func(Comment)) error {
+func Traverse(root Comment, handler func(Comment) bool) error {
 	memo := make(map[int]bool, 10)
 
 	return traverseUtil(root, handler, memo)
 }
 
-func traverseUtil(root Comment, handler func(Comment), memo map[int]bool) error {
+func traverseUtil(root Comment, handler func(Comment) bool, memo map[int]bool) error {
 	if memo[root.GetID()] == true {
 		return errors.New("there are duplicate primary ID elements of value: " + strconv.Itoa(root.GetID()))
 	}
 
-	handler(root)
+	if handler(root) == false {
+		return nil
+	}
 
 	memo[root.GetID()] = true
 
