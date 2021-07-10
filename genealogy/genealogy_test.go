@@ -188,3 +188,27 @@ func TestTraverseUp(t *testing.T) {
 		t.Fatal("Root must have ~56.25 as TraitX")
 	}
 }
+
+///*
+//	n = 20
+//	2^20 = 1,048,576
+//
+//	Extremely slow
+// todo goroutines
+// */
+//func TestMakeTreeWorstCasePerformance(t *testing.T) {
+//	root := &GenealogyTest{ID: 1, MotherID: 2, FatherID: 2}
+//
+//	plain := make([]Genealogy, 20)
+//
+//	for i := 0; i < 20; i++ {
+//		if i == 0 {
+//			plain[i] = root
+//			continue
+//		}
+//
+//		plain[i] = &GenealogyTest{ID: i + 1, MotherID: i + 2, FatherID: i + 2}
+//	}
+//
+//	MakeGenealogy(root, plain)
+//}
