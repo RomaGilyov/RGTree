@@ -1,7 +1,6 @@
 package comments
 
 import (
-	"strconv"
 	"testing"
 )
 
@@ -9,8 +8,8 @@ import (
 
 type CommentTest struct {
 	Title string
-	ID int
-	ParentID int
+	ID interface{}
+	ParentID interface{}
 	Children []Comment
 }
 
@@ -22,16 +21,12 @@ func (ct CommentTest) GetChildren() []Comment {
 	return ct.Children
 }
 
-func (ct CommentTest) GetID() int {
+func (ct CommentTest) GetID() interface{} {
 	return ct.ID
 }
 
-func (ct CommentTest) GetParentID() int {
+func (ct CommentTest) GetParentID() interface{} {
 	return ct.ParentID
-}
-
-func (ct CommentTest) String() string {
-	return "{ID: " + strconv.Itoa(ct.ID) + ", ParentID: " + strconv.Itoa(ct.ParentID) + ", Title: " + ct.Title + "}"
 }
 
 /*

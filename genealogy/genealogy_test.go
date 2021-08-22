@@ -9,9 +9,9 @@ import (
 
 type GenealogyTest struct {
 	Name string
-	ID int
-	FatherID int
-	MotherID int
+	ID interface{}
+	FatherID interface{}
+	MotherID interface{}
 	Mother Genealogy
 	Father Genealogy
 	TraitX float64
@@ -33,25 +33,16 @@ func (ct GenealogyTest) GetMother() Genealogy {
 	return ct.Mother
 }
 
-func (ct GenealogyTest) GetID() int {
+func (ct GenealogyTest) GetID() interface{} {
 	return ct.ID
 }
 
-func (ct GenealogyTest) GetFatherID() int {
+func (ct GenealogyTest) GetFatherID() interface{} {
 	return ct.FatherID
 }
 
-func (ct GenealogyTest) GetMotherID() int {
+func (ct GenealogyTest) GetMotherID() interface{} {
 	return ct.MotherID
-}
-
-func (ct GenealogyTest) String() string {
-	return "{" +
-		"ID: " + strconv.Itoa(ct.ID) + ", " +
-		"FatherID: " + strconv.Itoa(ct.FatherID) + ", " +
-		"MotherID: " + strconv.Itoa(ct.MotherID) + ", " +
-		"TraitX: " + strconv.FormatFloat(ct.TraitX, 'f', -1, 64) + ", " +
-		"Name: " + ct.Name + "}"
 }
 
 /*
@@ -188,27 +179,3 @@ func TestTraverseUp(t *testing.T) {
 		t.Fatal("Root must have ~56.25 as TraitX")
 	}
 }
-
-///*
-//	n = 20
-//	2^20 = 1,048,576
-//
-//	Extremely slow
-// todo goroutines
-// */
-//func TestMakeTreeWorstCasePerformance(t *testing.T) {
-//	root := &GenealogyTest{ID: 1, MotherID: 2, FatherID: 2}
-//
-//	plain := make([]Genealogy, 20)
-//
-//	for i := 0; i < 20; i++ {
-//		if i == 0 {
-//			plain[i] = root
-//			continue
-//		}
-//
-//		plain[i] = &GenealogyTest{ID: i + 1, MotherID: i + 2, FatherID: i + 2}
-//	}
-//
-//	MakeGenealogy(root, plain)
-//}

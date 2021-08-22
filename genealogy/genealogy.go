@@ -6,9 +6,9 @@ import (
 )
 
 type Genealogy interface {
-	GetID() int
-	GetMotherID() int
-	GetFatherID() int
+	GetID() interface{}
+	GetMotherID() interface{}
+	GetFatherID() interface{}
 	SetFather(Genealogy)
 	SetMother(Genealogy)
 	GetFather() Genealogy
@@ -51,11 +51,11 @@ type Genealogy interface {
 
  */
 func MakeGenealogy(root Genealogy, ancestors []Genealogy) error {
-	memo := make(map[int]bool, 1)
+	memo := make(map[interface{}]bool, 1)
 
 	memo[root.GetID()] = true
 
-	mapped := make(map[int]Genealogy, len(ancestors))
+	mapped := make(map[interface{}]Genealogy, len(ancestors))
 
 	for _, ancestor := range ancestors {
 		mapped[ancestor.GetID()] = ancestor
@@ -89,13 +89,13 @@ func MakeGenealogy(root Genealogy, ancestors []Genealogy) error {
 
 	5 -> 4 -> 6 -> 5
  */
-func makeGenealogyUtil(root Genealogy, mapped map[int]Genealogy, memo map[int]bool) error {
+func makeGenealogyUtil(root Genealogy, mapped map[interface{}]Genealogy, memo map[interface{}]bool) error {
 	if memo[root.GetFatherID()] == true {
-		return errors.New("f self ref: " + strconv.Itoa(root.GetID()) + " <-> " + strconv.Itoa(root.GetFatherID()))
+		return errors.New("f self ref: " + idToString(root.GetID()) + " <-> " + idToString(root.GetFatherID()))
 	}
 
 	if memo[root.GetMotherID()] == true {
-		return errors.New("m self ref: " + strconv.Itoa(root.GetID()) + " <-> " + strconv.Itoa(root.GetMotherID()))
+		return errors.New("m self ref: " + idToString(root.GetID()) + " <-> " + idToString(root.GetMotherID()))
 	}
 
 	if mother, exists := mapped[root.GetMotherID()]; exists {
@@ -125,8 +125,29 @@ func makeGenealogyUtil(root Genealogy, mapped map[int]Genealogy, memo map[int]bo
 	return nil
 }
 
-func appendMemo(memo map[int]bool, id int) map[int]bool {
-	newPath := make(map[int]bool, len(memo) + 1)
+func idToString(id interface{}) string {
+	switch v := id.(type) {
+		case int:
+			return strconv.FormatInt(int64(v), 10)
+		case int32:
+			return strconv.FormatInt(int64(v), 10)
+		case int64:
+			return strconv.FormatInt(v, 10)
+		case uint:
+			return strconv.FormatUint(uint64(v), 10)
+		case uint32:
+			return strconv.FormatUint(uint64(v), 10)
+		case uint64:
+			return strconv.FormatUint(v, 10)
+		case string:
+			return v
+		default:
+			return ""
+	}
+}
+
+func appendMemo(memo map[interface{}]bool, id interface{}) map[interface{}]bool {
+	newPath := make(map[interface{}]bool, len(memo) + 1)
 
 	for pid, exists := range memo {
 		newPath[pid] = exists

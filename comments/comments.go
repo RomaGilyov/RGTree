@@ -8,19 +8,40 @@ import (
 type Comment interface {
 	SetChild(Comment)
 	GetChildren() []Comment
-	GetID() int
-	GetParentID() int
+	GetID() interface{}
+	GetParentID() interface{}
 }
 
 func MakeTree(root Comment, comments []Comment) error {
-	memo := make(map[int]bool, len(comments))
+	memo := make(map[interface{}]bool, len(comments))
 
 	memo[root.GetID()] = true
 
 	return makeTreeUtil(root, comments, memo)
 }
 
-func makeTreeUtil(root Comment, comments []Comment, memo map[int]bool) error {
+func idToString(id interface{}) string {
+	switch v := id.(type) {
+	case int:
+		return strconv.FormatInt(int64(v), 10)
+	case int32:
+		return strconv.FormatInt(int64(v), 10)
+	case int64:
+		return strconv.FormatInt(v, 10)
+	case uint:
+		return strconv.FormatUint(uint64(v), 10)
+	case uint32:
+		return strconv.FormatUint(uint64(v), 10)
+	case uint64:
+		return strconv.FormatUint(v, 10)
+	case string:
+		return v
+	default:
+		return ""
+	}
+}
+
+func makeTreeUtil(root Comment, comments []Comment, memo map[interface{}]bool) error {
 	var children []Comment
 
 	var err error
@@ -28,7 +49,7 @@ func makeTreeUtil(root Comment, comments []Comment, memo map[int]bool) error {
 	for _, child := range comments {
 		if child.GetParentID() == root.GetID() {
 			if memo[child.GetID()] == true {
-				errMes := "Recursive data: " + strconv.Itoa(child.GetID()) + " and " + strconv.Itoa(root.GetID())
+				errMes := "Recursive data: " + idToString(child.GetID()) + " and " + idToString(root.GetID())
 
 				return errors.New(errMes)
 			}
@@ -53,14 +74,14 @@ func makeTreeUtil(root Comment, comments []Comment, memo map[int]bool) error {
 }
 
 func Traverse(root Comment, handler func(Comment) bool) error {
-	memo := make(map[int]bool, 10)
+	memo := make(map[interface{}]bool, 10)
 
 	return traverseUtil(root, handler, memo)
 }
 
-func traverseUtil(root Comment, handler func(Comment) bool, memo map[int]bool) error {
+func traverseUtil(root Comment, handler func(Comment) bool, memo map[interface{}]bool) error {
 	if memo[root.GetID()] == true {
-		return errors.New("there are duplicate primary ID elements of value: " + strconv.Itoa(root.GetID()))
+		return errors.New("there are duplicate primary ID elements of value: " + idToString(root.GetID()))
 	}
 
 	if handler(root) == false {
