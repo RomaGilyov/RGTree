@@ -8,8 +8,8 @@ import (
 
 type CommentTest struct {
 	Title string
-	ID interface{}
-	ParentID interface{}
+	ID int
+	ParentID int
 	Children []Comment
 }
 

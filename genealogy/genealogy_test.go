@@ -9,9 +9,9 @@ import (
 
 type GenealogyTest struct {
 	Name string
-	ID interface{}
-	FatherID interface{}
-	MotherID interface{}
+	ID int
+	FatherID int
+	MotherID int
 	Mother Genealogy
 	Father Genealogy
 	TraitX float64
