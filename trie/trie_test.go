@@ -5,14 +5,15 @@ import (
 	"testing"
 )
 
-func TestMakeTreeMap(t *testing.T) {
-	word := []interface{}{"c", "a", "r"}
+func TestPrefixSearch(t *testing.T) {
+	trie := Construct()
 
-	trie := Construct(word)
-
+	trie.Add([]interface{}{"c", "a", "r"})
 	trie.Add([]interface{}{"c", "a", "t"})
-	trie.Add([]interface{}{"c", "a", "r", "d"})
 	trie.Add([]interface{}{"c", "a", "r", "s"})
+	trie.Add([]interface{}{"c", "a", "r", "d"})
 
-	fmt.Println(trie.PrefixSearch([]interface{}{"c", "a"}))
+	fmt.Println(trie.PrefixSearch([]interface{}{}))
+	fmt.Println(trie.Exists([]interface{}{"c", "r"}))
+	//fmt.Println(trie.Children["c"].Children["a"].Children["r"])
 }

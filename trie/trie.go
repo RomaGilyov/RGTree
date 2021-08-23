@@ -1,5 +1,7 @@
 package trie
 
+import "fmt"
+
 /*
 	Trie
  */
@@ -8,12 +10,8 @@ type Trie struct {
 	Children map[interface{}]*Trie
 }
 
-func Construct(values []interface{}) *Trie {
-	t := new(Trie)
-
-	t.Add(values)
-
-	return t
+func Construct() *Trie {
+	return &Trie{Val: nil, Children: make(map[interface{}]*Trie)}
 }
 
 func (t *Trie) PrefixSearch(prefix []interface{}) [][]interface{} {
@@ -25,7 +23,11 @@ func (t *Trie) PrefixSearch(prefix []interface{}) [][]interface{} {
 
 	suffix := t.getSuffixUtil(prefix)
 
-	results = TrieToDict(suffix)
+	fmt.Println(suffix)
+
+	results = ToDict(suffix)
+
+	fmt.Println(results)
 
 	for i, col := range results {
 		results[i] = append(prefix, col...)
@@ -54,16 +56,18 @@ func (t *Trie) PrefixSearch(prefix []interface{}) [][]interface{} {
 	1 3 6
 	1 3 7
  */
-func TrieToDict(node *Trie) [][]interface{} {
+func ToDict(node *Trie) [][]interface{} {
 	return trieToDictUtil(node, make([]interface{}, 0, 10), make([][]interface{}, 0, 10))
 }
 
 func trieToDictUtil(node *Trie, path []interface{}, results [][]interface{}) [][]interface{} {
 	if len(node.Children) == 0 {
-		results = append(results, append(path, node.Val))
+		fmt.Println(path)
+
+		return append(results, path)
 	} else {
 		for _, child := range node.Children {
-			trieToDictUtil(child, append(path, child.Val), results)
+			results = trieToDictUtil(child, append(path, child.Val), results)
 		}
 	}
 
@@ -107,15 +111,13 @@ func (t *Trie) Add(values []interface{}) {
 		return
 	}
 
-	if t.Exists(values) == true {
-		return
-	}
-
 	val := values[0]
 
-	child := &Trie{Val: val}
+	if child, ok := t.Children[val]; ok {
+		child.Add(values[1:])
+	} else {
+		t.Children[val] = &Trie{Val: val, Children: make(map[interface{}]*Trie)}
 
-	t.Children[val] = child
-
-	child.Add(values[1:])
+		t.Children[val].Add(values[1:])
+	}
 }
