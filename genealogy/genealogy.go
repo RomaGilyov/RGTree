@@ -2,7 +2,7 @@ package genealogy
 
 import (
 	"errors"
-	"strconv"
+	"github.com/RomaGilyov/RGTree/util"
 )
 
 type Genealogy interface {
@@ -91,11 +91,11 @@ func MakeGenealogy(root Genealogy, ancestors []Genealogy) error {
  */
 func makeGenealogyUtil(root Genealogy, mapped map[interface{}]Genealogy, memo map[interface{}]bool) error {
 	if memo[root.GetFatherID()] == true {
-		return errors.New("f self ref: " + idToString(root.GetID()) + " <-> " + idToString(root.GetFatherID()))
+		return errors.New("f self ref: " + util.NumericToString(root.GetID()) + " <-> " + util.NumericToString(root.GetFatherID()))
 	}
 
 	if memo[root.GetMotherID()] == true {
-		return errors.New("m self ref: " + idToString(root.GetID()) + " <-> " + idToString(root.GetMotherID()))
+		return errors.New("m self ref: " + util.NumericToString(root.GetID()) + " <-> " + util.NumericToString(root.GetMotherID()))
 	}
 
 	if mother, exists := mapped[root.GetMotherID()]; exists {
@@ -123,27 +123,6 @@ func makeGenealogyUtil(root Genealogy, mapped map[interface{}]Genealogy, memo ma
 	}
 
 	return nil
-}
-
-func idToString(id interface{}) string {
-	switch v := id.(type) {
-		case int:
-			return strconv.FormatInt(int64(v), 10)
-		case int32:
-			return strconv.FormatInt(int64(v), 10)
-		case int64:
-			return strconv.FormatInt(v, 10)
-		case uint:
-			return strconv.FormatUint(uint64(v), 10)
-		case uint32:
-			return strconv.FormatUint(uint64(v), 10)
-		case uint64:
-			return strconv.FormatUint(v, 10)
-		case string:
-			return v
-		default:
-			return ""
-	}
 }
 
 func appendMemo(memo map[interface{}]bool, id interface{}) map[interface{}]bool {

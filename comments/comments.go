@@ -2,7 +2,7 @@ package comments
 
 import (
 	"errors"
-	"strconv"
+	"github.com/RomaGilyov/RGTree/util"
 )
 
 type Comment interface {
@@ -20,27 +20,6 @@ func MakeTree(root Comment, comments []Comment) error {
 	return makeTreeUtil(root, comments, memo)
 }
 
-func idToString(id interface{}) string {
-	switch v := id.(type) {
-	case int:
-		return strconv.FormatInt(int64(v), 10)
-	case int32:
-		return strconv.FormatInt(int64(v), 10)
-	case int64:
-		return strconv.FormatInt(v, 10)
-	case uint:
-		return strconv.FormatUint(uint64(v), 10)
-	case uint32:
-		return strconv.FormatUint(uint64(v), 10)
-	case uint64:
-		return strconv.FormatUint(v, 10)
-	case string:
-		return v
-	default:
-		return ""
-	}
-}
-
 func makeTreeUtil(root Comment, comments []Comment, memo map[interface{}]bool) error {
 	var children []Comment
 
@@ -49,7 +28,7 @@ func makeTreeUtil(root Comment, comments []Comment, memo map[interface{}]bool) e
 	for _, child := range comments {
 		if child.GetParentID() == root.GetID() {
 			if memo[child.GetID()] == true {
-				errMes := "Recursive data: " + idToString(child.GetID()) + " and " + idToString(root.GetID())
+				errMes := "Recursive data: " + util.NumericToString(child.GetID()) + " and " + util.NumericToString(root.GetID())
 
 				return errors.New(errMes)
 			}
@@ -81,7 +60,7 @@ func Traverse(root Comment, handler func(Comment) bool) error {
 
 func traverseUtil(root Comment, handler func(Comment) bool, memo map[interface{}]bool) error {
 	if memo[root.GetID()] == true {
-		return errors.New("there are duplicate primary ID elements of value: " + idToString(root.GetID()))
+		return errors.New("there are duplicate primary ID elements of value: " + util.NumericToString(root.GetID()))
 	}
 
 	if handler(root) == false {
