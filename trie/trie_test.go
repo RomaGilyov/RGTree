@@ -122,7 +122,7 @@ func TestFlatten(t *testing.T) {
 	dict := trie.Flatten()
 
 	if len(dict) != 130 {
-		t.Fatal("must have 7 words")
+		t.Fatal("must have 130 words")
 	}
 }
 
