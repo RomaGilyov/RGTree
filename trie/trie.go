@@ -2,6 +2,7 @@ package trie
 
 import (
 	"errors"
+	"github.com/RomaGilyov/RGTree/util"
 )
 
 /*
@@ -14,6 +15,18 @@ type Trie struct {
 
 func Construct() *Trie {
 	return &Trie{Val: nil, Children: make(map[interface{}]*Trie)}
+}
+
+func (t *Trie) Reverse() *Trie {
+	dict := t.Flatten()
+
+	trie := Construct()
+
+	for _, value := range dict {
+		trie.Add(util.ReverseData(value))
+	}
+
+	return trie
 }
 
 func (t *Trie) PrefixSearch(prefix []interface{}) [][]interface{} {
@@ -57,12 +70,12 @@ func (t *Trie) PrefixSearch(prefix []interface{}) [][]interface{} {
 func (t *Trie) Flatten() [][]interface{} {
 	results := make([][]interface{}, 0, 10)
 
-	t.trieToDictUtil(make([]interface{}, 0, 10), &results)
+	t.flattenUtil(make([]interface{}, 0, 10), &results)
 
 	return results
 }
 
-func (t *Trie) trieToDictUtil(path []interface{}, results *[][]interface{}) {
+func (t *Trie) flattenUtil(path []interface{}, results *[][]interface{}) {
 	if len(t.Children) == 0 {
 		clonePath := make([]interface{}, 0)
 
@@ -73,7 +86,7 @@ func (t *Trie) trieToDictUtil(path []interface{}, results *[][]interface{}) {
 		*results = append(*results, clonePath)
 	} else {
 		for _, child := range t.Children {
-			child.trieToDictUtil(append(path, child.Val), results)
+			child.flattenUtil(append(path, child.Val), results)
 		}
 	}
 }

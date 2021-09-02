@@ -126,6 +126,18 @@ func TestFlatten(t *testing.T) {
 	}
 }
 
+func TestReverse(t *testing.T) {
+	trie := testTrie()
+
+	trie = trie.Reverse()
+
+	dict := trie.PrefixSearch([]interface{}{"w", "o"})
+
+	if len(dict) != 2 {
+		t.Fatal("must have contain 2 words `window` and `know`")
+	}
+}
+
 func BenchmarkExists(b *testing.B) {
 	trie := testTrie()
 

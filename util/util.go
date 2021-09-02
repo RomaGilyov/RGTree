@@ -22,3 +22,17 @@ func NumericToString(id interface{}) string {
 		return ""
 	}
 }
+
+func ReverseData(data []interface{}) []interface{} {
+	l := len(data)
+
+	reversed := make([]interface{}, l)
+
+	for i := 0; i < len(data); i++ {
+		reversed[i] = data[l - 1]
+
+		l--
+	}
+
+	return reversed
+}
