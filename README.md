@@ -1,2 +1,2 @@
 # RGTree
-Handle tree routines (building, rendering, searching, update, pop up update)
+Handle trees and tries (build, search, update, traverse)
